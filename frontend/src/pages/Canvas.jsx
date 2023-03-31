@@ -11,7 +11,7 @@ export default function CanvasPage() {
     <CanvasContextProvider>
       {/* <CanvasTest /> */}
       <div class="shell">
-        <div class="topbar">
+        <div class="menubar">
           <Menubar />
         </div>
         <div class="bottom">

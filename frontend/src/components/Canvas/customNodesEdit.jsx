@@ -1,45 +1,45 @@
-import React, { memo } from 'react';
-import { Handle, useReactFlow, useStoreApi, Position } from 'reactflow';
-import TextField from '@mui/material/TextField';
+import React, { memo } from "react";
+import { Handle, useReactFlow, useStoreApi, Position } from "reactflow";
+import TextField from "@mui/material/TextField";
 const options = [
   {
-    value: 'smoothstep',
-    label: 'Smoothstep',
+    value: "smoothstep",
+    label: "Smoothstep",
   },
   {
-    value: 'step',
-    label: 'Step',
+    value: "step",
+    label: "Step",
   },
   {
-    value: 'default',
-    label: 'Bezier (default)',
+    value: "default",
+    label: "Bezier (default)",
   },
   {
-    value: 'straight',
-    label: 'Straight',
+    value: "straight",
+    label: "Straight",
   },
 ];
 
 const datatypes = [
   {
-    value: 'string',
-    label: 'String',
+    value: "string",
+    label: "String",
   },
   {
-    value: 'num',
-    label: 'Number',
+    value: "num",
+    label: "Number",
   },
   {
-    value: 'date',
-    label: 'Date',
+    value: "date",
+    label: "Date",
   },
   {
-    value: 'datetime',
-    label: 'Date Time',
+    value: "datetime",
+    label: "Date Time",
   },
   {
-    value: 'boolean',
-    label: 'Boolean',
+    value: "boolean",
+    label: "Boolean",
   },
 ];
 
@@ -82,24 +82,26 @@ function Select({ value, handleId, nodeId }) {
 }
 
 function CustomNodeEdit({ id, data }) {
+  const [nameValue, setNameValue] = React.useState(data.name);
+  const [selectValue, setSelectValue] = React.useState(data.type);
+  const [keyValue, setKeyValue] = React.useState(data.key);
   return (
     <>
-      <div className="custom-node__header">
-        <strong>{data.tableName}</strong>
-      </div>
+     
       <div className="custom-node_body">
-        <form>
+        {/* <form> */}
+        <div>
           <div class="attribute-wrapper">
             <Handle
               type="source"
               position={Position.Left}
-              id={id + '_l'}
+              id={id + "_l"}
               isConnectable={true}
             />
             <Handle
               type="source"
               position={Position.Right}
-              id={id + '_r'}
+              id={id + "_r"}
               isConnectable={true}
             />
             <div class="am-line-name">
@@ -107,7 +109,7 @@ function CustomNodeEdit({ id, data }) {
                 <label>Name</label>
               </div>
               <div class="am-line-name-ip">
-                <input type="text" value={data.name} />
+                <input type="text" value={nameValue} onChange={(e)=>{setNameValue(e.target.value)}}/>
               </div>
             </div>
             <div class="am-line-type">
@@ -115,7 +117,8 @@ function CustomNodeEdit({ id, data }) {
                 <label>Type</label>
               </div>
               <div class="am-line-type-sel">
-                <select value={data.type}>
+                <select value={selectValue} onChange={(e)=>{setSelectValue(e.target.value)}}>
+                <option value={""} disabled>None</option>
                   {datatypes.map((obj) => {
                     return <option value={obj.value}>{obj.label}</option>;
                   })}
@@ -127,12 +130,15 @@ function CustomNodeEdit({ id, data }) {
                 <label>Key</label>
               </div>
               <div class="am-line-key-ck">
-                <input type="checkbox" value={data.key} />
+                <input type="checkbox" value={keyValue} onChange={()=>{setKeyValue(!keyValue)}} />
               </div>
             </div>
           </div>
-        </form>
+        </div>
+        {/* </form> */}
       </div>
+    
+
     </>
   );
 }

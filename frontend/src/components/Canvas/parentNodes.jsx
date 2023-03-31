@@ -1,45 +1,54 @@
-import React, { memo } from 'react';
-import { Handle, useReactFlow, useStoreApi, Position } from 'reactflow';
-import TextField from '@mui/material/TextField';
+import React, { memo } from "react";
+import { Handle, useReactFlow, useStoreApi, Position } from "reactflow";
+import TextField from "@mui/material/TextField";
+import ReactFlow, {
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+} from "reactflow";
+
 const options = [
   {
-    value: 'smoothstep',
-    label: 'Smoothstep',
+    value: "smoothstep",
+    label: "Smoothstep",
   },
   {
-    value: 'step',
-    label: 'Step',
+    value: "step",
+    label: "Step",
   },
   {
-    value: 'default',
-    label: 'Bezier (default)',
+    value: "default",
+    label: "Bezier (default)",
   },
   {
-    value: 'straight',
-    label: 'Straight',
+    value: "straight",
+    label: "Straight",
   },
 ];
 
 const datatypes = [
   {
-    value: 'string',
-    label: 'String',
+    value: "string",
+    label: "String",
   },
   {
-    value: 'num',
-    label: 'Number',
+    value: "num",
+    label: "Number",
   },
   {
-    value: 'date',
-    label: 'Date',
+    value: "date",
+    label: "Date",
   },
   {
-    value: 'datetime',
-    label: 'Date Time',
+    value: "datetime",
+    label: "Date Time",
   },
   {
-    value: 'boolean',
-    label: 'Boolean',
+    value: "boolean",
+    label: "Boolean",
   },
 ];
 
@@ -81,29 +90,40 @@ function Select({ value, handleId, nodeId }) {
   );
 }
 
-function childObj(id, ctr) {
-  let newObj = {
-    id: id + '_' + ctr,
-    type: 'child',
-    position: { x: 10, y: 50 + 100 * ctr },
-    data: {
-      name: '',
-      type: '',
-      key: false,
-    },
-    parentNode: id,
-    extent: 'parent',
-    draggable: false,
-    style: {
-      width: 224,
-    },
-  };
-  return newObj;
-}
-
 function ParentNode({ id, data }) {
+  const [buttonVisibility, setButtonVisibility] = React.useState("hidden");
+  const [tableName, setTableName] = React.useState(data.tableName);
+  function createChildObj(id, ctr) {
+    try {
+      let newObj = {
+        id: id + "_" + ctr,
+        type: "child",
+        position: { x: 10, y: 50 + 100 * ctr },
+        data: {
+          name: "",
+          type: "",
+          key: false,
+        },
+        parentNode: id,
+        extent: "parent",
+        draggable: false,
+        style: {
+          width: 224,
+        },
+      };
+      return newObj;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  }
+
   const onAddAtribute = (id, data) => {
-    let newNode = childObj(id, data.attribute_count);
+    let newNode = createChildObj(id, data.attribute_count);
+    if (newNode) {
+      // nodes.append(newNode);
+      data.attribute_count += 1;
+    }
     // update att cnt
     // add newNode in nodes
   };
@@ -111,30 +131,57 @@ function ParentNode({ id, data }) {
     <>
       <div
         style={{
-          border: '1px solid black',
-          height: '100%',
-          weight: '100%',
+          border: "1px solid black",
+          height: "100%",
+          width: "100%",
         }}
       >
         <div className="custom-node__header">
-          <input
-            style={{
-              border: '1px grey solid',
-              borderRadius: '2px',
-              fontSize: '18px',
-              width: '150px',
-            }}
-            value={data.tableName}
-          />
-          <button
-            onClick={(e) => {
-              onAddAtribute(id);
-            }}
-          >
-            add attribute
-          </button>
+          <div>
+            <div>
+              <input
+                style={{
+                  border: "1px grey solid",
+                  borderRadius: "2px",
+                  fontSize: "18px",
+                }}
+                value={tableName}
+                onChange={(e) => {
+                  setTableName(e.target.value);
+                }}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: "10px",
+                display: "flex",
+                flexDirection: "row",
+                // justifyContent: "space-between",
+                width: "100%",
+                gap: "10px",
+              }}
+            >
+              <button
+                style={{ flex: 1 }}
+                onClick={(e) => {
+                  onAddAtribute(id, data);
+                }}
+              >
+                add attribute
+              </button>
+              <button
+                style={{ flex: 1 }}
+                onClick={(e) => {
+                  onAddAtribute(id, data);
+                }}
+              >
+                save changes
+              </button>
+            </div>
+          </div>
         </div>
-        <hr />
+
+        <hr style={{ height: "1px", margin: 0, padding: 0 }} />
       </div>
     </>
   );

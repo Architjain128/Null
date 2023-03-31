@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -6,18 +6,21 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
-} from 'reactflow';
-import ParentNode from './parentNodes.jsx';
-import CustomNodeEdit from './customNodesEdit.jsx';
+} from "reactflow";
+import ParentNode from "./parentNodes.jsx";
+import CustomNodeEdit from "./customNodesEdit.jsx";
 // import CustomNodeView from './customNodesView.js';
 
-import 'reactflow/dist/style.css';
-import { nodes as initialNodes, edges as initialEdges } from './data.jsx';
+import "reactflow/dist/style.css";
+import { nodes as initialNodes, edges as initialEdges } from "./data.jsx";
 
 const nodeTypes = {
   child: CustomNodeEdit,
-  parent: ParentNode,
-//   childView: CustomNodeView,
+  // parent: ({ nodes, setNodes }) => (
+  //   <ParentNode nodes={nodes} setNodes={setNodes} />
+  // ),
+  parent:ParentNode,
+    // childView: CustomNodeView,
 };
 
 export default function Canvas() {
@@ -30,7 +33,7 @@ export default function Canvas() {
   );
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: "100%", height: "100%" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}

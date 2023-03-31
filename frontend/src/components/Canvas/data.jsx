@@ -19,7 +19,7 @@ export const nodes = [
   {
     id: '1_0',
     type: 'child',
-    position: { x: 10, y: 50 },
+    position: { x: 10, y: 80 },
     data: {
       name: '_id',
       type: 'Obj',
@@ -35,7 +35,7 @@ export const nodes = [
   {
     id: '1_1',
     type: 'child',
-    position: { x: 10, y: 150 },
+    position: { x: 10, y: 180 },
     data: {
       name: 'Name',
       type: 'string',
@@ -51,7 +51,7 @@ export const nodes = [
   {
     id: '1_2',
     type: 'child',
-    position: { x: 10, y: 250 },
+    position: { x: 10, y: 280 },
     data: {
       name: 'val',
       type: 'num',
