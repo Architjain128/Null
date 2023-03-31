@@ -8,21 +8,22 @@ import ReactFlow, {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
-} from 'reactflow';
-import ParentNode from './parentNodes.jsx';
-import CustomNodeEdit from './customNodesEdit.jsx';
+} from "reactflow";
+import ParentNode from "./parentNodes.jsx";
+import CustomNodeEdit from "./customNodesEdit.jsx";
 // import CustomNodeView from './customNodesView.js';
 
-const rfStyle = {
-  backgroundColor: '#B8CEFF',
-};
-import 'reactflow/dist/style.css';
-import { nodes as initialNodes } from './data.jsx';
+
+import "reactflow/dist/style.css";
+import { nodes as initialNodes, edges as initialEdges } from "./data.jsx";
 
 const nodeTypes = {
   child: CustomNodeEdit,
-  parent: ParentNode,
-//   childView: CustomNodeView,
+  // parent: ({ nodes, setNodes }) => (
+  //   <ParentNode nodes={nodes} setNodes={setNodes} />
+  // ),
+  parent:ParentNode,
+    // childView: CustomNodeView,
 };
 const initialEdges = [
   { id: 'edge-1', sourceHandle: '1_0_r', targetHandle: '2_0_l'},
@@ -54,7 +55,7 @@ export default function Canvas() {
   // );
 
   return (
-    // <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: "100%", height: "100%" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
