@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -15,7 +15,7 @@ import CustomNodeEdit from "./customNodesEdit.jsx";
 
 
 import "reactflow/dist/style.css";
-import { nodes as initialNodes, edges as initialEdges } from "./data.jsx";
+import { nodes as initialNodes } from "./data.jsx";
 
 const nodeTypes = {
   child: CustomNodeEdit,
@@ -26,14 +26,23 @@ const nodeTypes = {
     // childView: CustomNodeView,
 };
 const initialEdges = [
-  { id: 'edge-1', sourceHandle: '1_0_r', targetHandle: '2_0_l'},
-  { id: 'edge-2', sourceHandle: '1_1_r', targetHandle: '2_2_l'},
+  { id: 'edge-1', source:'1_0', target:'2_0' ,sourceHandle: '1_0_r'},
+  // { id: 'edge-2', sourceHandle: '1_1_r', targetHandle: '2_2_l'},
 ];
 
 export default function Canvas() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
-
+  useEffect(() => {
+  setEdges([
+    {
+      id: 'edge-1', source: "2_1", sourceHandle: "2_1_r", target: "1_1",
+      type: 'straight',
+      // animated: true,
+      // style: { stroke: 'black' },
+    },
+  ]);
+}, []);
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
     [setNodes]
@@ -42,9 +51,14 @@ export default function Canvas() {
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [setEdges]
   );
+  // const onConnect = useCallback(
+  //   (connection) => setEdges((eds) => addEdge(connection, eds)),
+  //   [setEdges]
+  // );
   const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges]
+    (params) =>
+      setEdges((eds) => addEdge({ ...params, type: 'straight', }, eds)),
+    []
   );
   // const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   // const [edges, setEdges, onEdgesChange] = useEdgesState([]);

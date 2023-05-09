@@ -93,9 +93,10 @@ function CustomNodeEdit({ id, data }) {
         <div>
           <div class="attribute-wrapper">
             <Handle
-              type="source"
+              type="target"
               position={Position.Left}
-              id={id + "_l"}
+              // id={id + "_l"}
+              onConnect={(params) => console.log('handle onConnect', params)}
               isConnectable={true}
             />
             <Handle
