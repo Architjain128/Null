@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { Handle, useReactFlow, useStoreApi, Position } from "reactflow";
 import TextField from "@mui/material/TextField";
 const options = [
@@ -81,13 +81,31 @@ function Select({ value, handleId, nodeId }) {
   );
 }
 
-function CustomNodeEdit({ id, data }) {
+function CustomNodeEdit({ id, data , handleArtibuteChange}) {
   const [nameValue, setNameValue] = React.useState(data.name);
   const [selectValue, setSelectValue] = React.useState(data.type);
-  const [keyValue, setKeyValue] = React.useState(data.key);
+
+
+  // useEffect(()=>{
+  //   attributeChange()
+  // },[nameValue,selectValue])
+
+  const attributeChange=(value,name)=>{
+    let newData=data
+    if(name==="name"){
+      setNameValue(value)
+      newData.name=value;
+    }
+    if(name==="type"){
+      setSelectValue(value)
+      newData.type=value;
+    }
+    handleArtibuteChange(id,newData)
+  }
+
+
   return (
     <>
-     
       <div className="custom-node_body">
         {/* <form> */}
         <div>
@@ -109,7 +127,7 @@ function CustomNodeEdit({ id, data }) {
                 <label>Name</label>
               </div>
               <div class="am-line-name-ip">
-                <input type="text" value={nameValue} onChange={(e)=>{setNameValue(e.target.value)}}/>
+                <input type="text" value={nameValue} onChange={(e)=>{attributeChange(e.target.value,"name")}}/>
               </div>
             </div>
             <div class="am-line-type">
@@ -117,7 +135,7 @@ function CustomNodeEdit({ id, data }) {
                 <label>Type</label>
               </div>
               <div class="am-line-type-sel">
-                <select value={selectValue} onChange={(e)=>{setSelectValue(e.target.value)}}>
+                <select value={selectValue} onChange={(e)=>{attributeChange(e.target.value,"type")}}>
                 <option value={""} disabled>None</option>
                   {datatypes.map((obj) => {
                     return <option value={obj.value}>{obj.label}</option>;
@@ -125,14 +143,14 @@ function CustomNodeEdit({ id, data }) {
                 </select>
               </div>
             </div>
-            <div class="am-line-key">
+            {/* <div class="am-line-key">
               <div class="am-line-key-lb">
                 <label>Key</label>
               </div>
               <div class="am-line-key-ck">
                 <input type="checkbox" value={keyValue} onChange={()=>{setKeyValue(!keyValue)}} />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* </form> */}

@@ -90,15 +90,16 @@ function Select({ value, handleId, nodeId }) {
   );
 }
 
-function ParentNode({ id, data }) {
+function ParentNode({ id, data, handleAddArtibute }) {
   const [buttonVisibility, setButtonVisibility] = React.useState("hidden");
   const [tableName, setTableName] = React.useState(data.tableName);
+
   function createChildObj(id, ctr) {
     try {
       let newObj = {
         id: id + "_" + ctr,
         type: "child",
-        position: { x: 10, y: 50 + 100 * ctr },
+        position: { x: 10, y: 80 + 70 * ctr },
         data: {
           name: "",
           type: "",
@@ -120,11 +121,13 @@ function ParentNode({ id, data }) {
 
   const onAddAtribute = (id, data) => {
     let newNode = createChildObj(id, data.attribute_count);
-    if (newNode) {
-      // nodes.append(newNode);
-      data.attribute_count += 1;
-    }
+    console.log(">>>",newNode)
+    // if (newNode) {
+    //   // nodes.append(newNode);
+    //   data.attribute_count += 1;
+    // }
     // update att cnt
+    handleAddArtibute(newNode);
     // add newNode in nodes
   };
   return (
@@ -162,20 +165,20 @@ function ParentNode({ id, data }) {
               }}
             >
               <button
-                style={{ flex: 1 }}
+                style={{ flex: 1,fontSize:"10px" }}
                 onClick={(e) => {
                   onAddAtribute(id, data);
                 }}
               >
-                add attribute
+                Add Attribute
               </button>
               <button
-                style={{ flex: 1 }}
+                style={{ flex: 1,fontSize:"10px" }}
                 onClick={(e) => {
-                  onAddAtribute(id, data);
+                  // onAddAtribute(id, data);
                 }}
               >
-                save changes
+                Add Constraints 
               </button>
             </div>
           </div>

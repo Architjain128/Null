@@ -5,7 +5,7 @@ export const nodes = [
   {
     id: '1',
     type: 'parent',
-    position: { x: 50, y: 50 },
+    position: { x: 10, y: 10 },
     data: {
       tableName: 'orgId',
       link_to_file: '/',
@@ -13,7 +13,7 @@ export const nodes = [
     },
     style: {
       width: 244,
-      height: 380,
+      height: 300,
     },
   },
   {
@@ -35,7 +35,7 @@ export const nodes = [
   {
     id: '1_1',
     type: 'child',
-    position: { x: 10, y: 180 },
+    position: { x: 10, y: 150 },
     data: {
       name: 'Name',
       type: 'string',
@@ -51,7 +51,7 @@ export const nodes = [
   {
     id: '1_2',
     type: 'child',
-    position: { x: 10, y: 280 },
+    position: { x: 10, y: 220 },
     data: {
       name: 'val',
       type: 'num',
@@ -67,21 +67,21 @@ export const nodes = [
   {
     id: '2',
     type: 'parent',
-    position: { x: 100, y: 100 },
+    position: { x: 400, y: 10 },
     data: {
       tableName: 'empId',
       link_to_file: '/',
-      attribute_count : 3, 
+      attribute_count : 2, 
     },
     style: {
       width: 244,
-      height: 380,
+      height: 230,
     },
   },
   {
     id: '2_0',
     type: 'child',
-    position: { x: 10, y: 50 },
+    position: { x: 10, y: 80 },
     data: {
       name: '_id',
       type: 'Obj',
@@ -110,22 +110,7 @@ export const nodes = [
       width: 224,
     },
   },
-  {
-    id: '2_2',
-    type: 'child',
-    position: { x: 10, y: 250 },
-    data: {
-      name: 'val',
-      type: 'num',
-      key: false,
-    },
-    parentNode: '2',
-    extent: 'parent',
-    draggable: false,
-    style: {
-      width: 224,
-    },
-  },
+
 ];
 
 // export const edges = [];
