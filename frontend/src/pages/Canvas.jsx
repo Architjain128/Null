@@ -124,6 +124,17 @@ export default function CanvasPage() {
                   >
                     <pre>{JSON.stringify(modalData.data.edges, null, 2)}</pre>
                   </div>
+                  <Divider />
+                  <Typography>Constraints</Typography>
+                  <div
+                    style={{
+                      height: "100%",
+                      background: "#242424",
+                      color: "white",
+                    }}
+                  >
+                    <pre>{JSON.stringify(modalData.data.constraints, null, 2)}</pre>
+                  </div>
                 </div>
               </>
             ) : (

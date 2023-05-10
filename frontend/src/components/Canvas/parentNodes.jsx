@@ -102,6 +102,8 @@ function ParentNode({
   handleAddArtibute,
   handleTableDataChange,
   deleteTable,
+  setTableId,
+  setConstraints,
 }) {
   const [buttonVisibility, setButtonVisibility] = React.useState("hidden");
   const [tableName, setTableName] = React.useState(data.tableName);
@@ -166,7 +168,27 @@ function ParentNode({
           <button
             style={{ flex: 1, fontSize: "10px" }}
             onClick={(e) => {
-              // onAddAtribute(id, data);
+              let newData = JSON.parse(localStorage.getItem("null-db1-data")).nodes;
+              let info = newData.filter((item) => item.id.split("_")[0] === id);
+              let tmp={}
+              let table=info.filter((item)=>item.type==="parent")[0]
+              let tb={}
+              tb.id=table.id
+              tb.name=table.data.tableName
+              tmp.table=tb
+              let attributes=info.filter((item)=>item.type==="child")
+              let att=[]
+              attributes.forEach((item)=>{
+                let tmp={}
+                tmp.id=item.id
+                tmp.name=item.data.name
+                tmp.type=item.data.type
+                att.push(tmp)
+              })
+              tmp.attributes=att
+
+              setConstraints(tmp);
+              setTableId(id);
             }}
           >
             Add Constraints

@@ -110,12 +110,20 @@ export default function Canvas({
   // setEdges,
 }) {
   const [constraints, setConstraints] = React.useState({});
+  const [tableId, setTableId] = React.useState("");
+  const [tableData, setTableData] = React.useState([]);
+
   const handleChangeConstraint = (event, name) => {
+    console.log(event.target.value,name,tableId)
     let temp = constraints;
-    if (temp[name] === undefined) {
-      temp[name] = [];
+    if(!temp[tableId]){
+      temp[tableId] = {};
     }
-    temp[name] = event.target.value;
+    let tmp= temp[tableId];
+    if (!tmp[name]) {
+      tmp[name] = [];
+    }
+    tmp[name] = event.target.value;
     setConstraints(temp);
   };
 
@@ -137,7 +145,7 @@ export default function Canvas({
     );
   }, [nodes, edges]);
 
-  useEffect(() => {
+  useEffect(() => {  
     if (preview === true) {
       let modalData = {
         type: "preview",
@@ -145,6 +153,8 @@ export default function Canvas({
         data: {
           nodes: nodes,
           edges: edges,
+          constraints: constraints,
+          // constraints: tableData,
         },
       };
       setModalData(modalData);
@@ -206,6 +216,8 @@ export default function Canvas({
           handleAddArtibute={handleAddArtibute}
           handleTableDataChange={handleArtibuteChange}
           deleteTable={deleteTable}
+          setTableId={setTableId}
+          setConstraints={setTableData}
           {...props}
         />
       ),
@@ -239,7 +251,7 @@ export default function Canvas({
   const onConnect = useCallback(
     (connection) => {
       console.log(connection);
-      let nodes=JSON.parse(localStorage.getItem("null-db1-data")).nodes || [];
+      let nodes = JSON.parse(localStorage.getItem("null-db1-data")).nodes || [];
       console.log(nodes);
       let data = {};
       let tb1ID = connection.source.split("_")[0];
@@ -334,73 +346,102 @@ export default function Canvas({
             Redo
           </Button>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            // justifyContent: "center",
-            // alignItems: "center",
-            border: "1px solid black",
-            borderRadius: "5px",
-            padding: "5px",
-            margin: "5px",
-            backgroundColor: "cyan",
-          }}
-        >
-          CONSTRAINTS
+        {tableId === "" ? (
           <div
             style={{
+              display: "flex",
+              flexDirection: "column",
               width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              border: "1px solid black",
+              borderRadius: "5px",
+              padding: "5px",
+              margin: "5px",
+              backgroundColor: "cyan",
             }}
           >
-            {constraintsBox.map((obj) => {
-              return (
-                <div
-                  style={{
-                    margin: "2px",
-                    border: "1px solid grey",
-                    padding: "5px",
-                  }}
-                >
-                  <Typography variant="subtitle" gutterBottom>
-                    {obj.label}
-                  </Typography>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    multiple
-                    value={constraints[obj.field] || []}
-                    onChange={(e) => handleChangeConstraint(e, obj.field)}
-                    style={{
-                      width: "100%",
-                      padding: "0px",
-                    }}
-                    renderValue={(selected) => (
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        {selected.map((value, idx) => (
-                          <Chip style={{ margin: 2 }} key={idx} label={value} />
-                        ))}
-                      </div>
-                    )}
-                  >
-                    <option value={""} disabled>
-                      None
-                    </option>
-                    {attributes.map((obj) => {
-                      return <option value={obj}>{obj}</option>;
-                    })}
-                  </Select>
-                </div>
-              );
-            })}
+            <div
+              style={{
+                padding: "5px",
+                backgroundColor: "rgba(0,0,0,0.1)",
+                borderRadius: "5px",
+                maxWidth:"200px",
+                textAlign: "center",
+              }}
+            >
+            Select a table and click on <strong>Add Constraints</strong>  to add constraints for that table.
+            </div>
           </div>
-        </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              border: "1px solid black",
+              borderRadius: "5px",
+              padding: "5px",
+              margin: "5px",
+              backgroundColor: "cyan",
+            }}
+          >
+            CONSTRAINTS for <strong>{tableData.table.name}</strong>
+            <div
+            key={constraints}
+              style={{
+                width: "100%",
+              }}
+            >
+              {constraintsBox.map((obj) => {
+                return (
+                  <div
+                    style={{
+                      margin: "2px",
+                      border: "1px solid grey",
+                      padding: "5px",
+                    }}
+                  >
+                    <Typography variant="subtitle" gutterBottom>
+                      {obj.label}
+                    </Typography>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      multiple={true}
+                      value={constraints[tableId.toString()] && constraints[tableId.toString()][obj.field] ? constraints[tableId.toString()][obj.field]:[{id:"12_1",name:"fef"},{id:"12_2",name:"fedf"}]}
+                      onChange={(e) => handleChangeConstraint(e, obj.field)}
+                      style={{
+                        width: "100%",
+                        padding: "0px",
+                      }}
+                      renderValue={(selected) => (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          {selected.map((value) => (
+                            <Chip
+                              style={{ margin: 2 }}
+                              key={value.id}
+                              label={value.name}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    >
+                      {tableData.attributes.map((obj) => {
+                        return <option value={obj}>{obj.name}</option>;
+                      })}
+                    </Select>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
       <Dialog
         open={eOpen}

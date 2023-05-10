@@ -21,10 +21,10 @@ export default function Menubar({ data, preview,setPreview,exportJSON,setCount }
     { label: "Import JSON", icon: <PublishIcon />, divider: false, function:()=>{} },
     { label: "Export JSON", icon: <GetAppIcon />, divider: true, function:()=>{exportJSON(data)} },
   
-    { label: "Add Node", icon: <AddBoxIcon />, divider: true, function:()=>{setCount(count=>count+1)} },
+    // { label: "Add Node", icon: <AddBoxIcon />, divider: true, function:()=>{setCount(count=>count+1)} },
 
-    { label: "Undo", icon: <UndoIcon />, divider: false, function:()=>{} },
-    { label: "Redo", icon: <RedoIcon />, divider: true, function:()=>{} },
+    // { label: "Undo", icon: <UndoIcon />, divider: false, function:()=>{} },
+    // { label: "Redo", icon: <RedoIcon />, divider: true, function:()=>{} },
   ];
 
  
