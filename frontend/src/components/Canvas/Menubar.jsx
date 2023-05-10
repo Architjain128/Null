@@ -11,22 +11,23 @@ import PreviewIcon from "@mui/icons-material/Preview";
 import CodeIcon from "@mui/icons-material/Code";
 
 
-
-export default function Menubar({ data, preview,setPreview }) {
+export default function Menubar({ data, preview,setPreview,exportJSON,setCount }) {
   const menuButtons = [
     { label: "New Schema", icon: <FiberNewIcon />, divider: false, function:()=>{} },
     { label: "Save Schema", icon: <SaveIcon />, divider: true, function:()=>{} },
-    { label: "Preview", icon: <PreviewIcon />, divider: true,function:()=>{setPreview(!preview)} },
-  
-    { label: "View JSON", icon: <CodeIcon />, divider: false, function:()=>{} },
+    { label: "Preview", icon: <PreviewIcon />, divider: true,function:()=>{} },
+
+    { label: "View JSON", icon: <CodeIcon />, divider: false, function:()=>{setPreview(!preview)} },
     { label: "Import JSON", icon: <PublishIcon />, divider: false, function:()=>{} },
-    { label: "Export JSON", icon: <GetAppIcon />, divider: true, function:()=>{} },
+    { label: "Export JSON", icon: <GetAppIcon />, divider: true, function:()=>{exportJSON(data)} },
   
-    { label: "Add Node", icon: <AddBoxIcon />, divider: true, function:()=>{} },
-  
+    { label: "Add Node", icon: <AddBoxIcon />, divider: true, function:()=>{setCount(count=>count+1)} },
+
     { label: "Undo", icon: <UndoIcon />, divider: false, function:()=>{} },
     { label: "Redo", icon: <RedoIcon />, divider: true, function:()=>{} },
   ];
+
+ 
   return (
     <div class="div-center-vh">
       <Grid container spacing={2}>

@@ -1,5 +1,11 @@
 import React, { memo, useEffect } from "react";
-import { Handle, useReactFlow, useStoreApi, Position } from "reactflow";
+import {
+  Handle,
+  useReactFlow,
+  useStoreApi,
+  Position,
+  NodeToolbar,
+} from "reactflow";
 import TextField from "@mui/material/TextField";
 const options = [
   {
@@ -81,39 +87,42 @@ function Select({ value, handleId, nodeId }) {
   );
 }
 
-function CustomNodeEdit({ id, data , handleArtibuteChange}) {
+function CustomNodeEdit({ id, data, handleArtibuteChange }) {
   const [nameValue, setNameValue] = React.useState(data.name);
   const [selectValue, setSelectValue] = React.useState(data.type);
-
 
   // useEffect(()=>{
   //   attributeChange()
   // },[nameValue,selectValue])
 
-  const attributeChange=(value,name)=>{
-    let newData=data
-    if(name==="name"){
-      setNameValue(value)
-      newData.name=value;
+  const attributeChange = (value, name) => {
+    let newData = data;
+    if (name === "name") {
+      setNameValue(value);
+      newData.name = value;
     }
-    if(name==="type"){
-      setSelectValue(value)
-      newData.type=value;
+    if (name === "type") {
+      setSelectValue(value);
+      newData.type = value;
     }
-    handleArtibuteChange(id,newData)
-  }
-
+    handleArtibuteChange(id, newData);
+  };
 
   return (
     <>
-      <div className="custom-node_body">
+      <div
+        className="custom-node_body"
+   
+      >
         {/* <form> */}
         <div>
+         
           <div class="attribute-wrapper">
             <Handle
-              type="source"
+              type="target"
               position={Position.Left}
               id={id + "_l"}
+              onConnect={(params) => console.log("handle onConnect", params)}
               isConnectable={true}
             />
             <Handle
@@ -127,7 +136,13 @@ function CustomNodeEdit({ id, data , handleArtibuteChange}) {
                 <label>Name</label>
               </div>
               <div class="am-line-name-ip">
-                <input type="text" value={nameValue} onChange={(e)=>{attributeChange(e.target.value,"name")}}/>
+                <input
+                  type="text"
+                  value={nameValue}
+                  onChange={(e) => {
+                    attributeChange(e.target.value, "name");
+                  }}
+                />
               </div>
             </div>
             <div class="am-line-type">
@@ -135,8 +150,15 @@ function CustomNodeEdit({ id, data , handleArtibuteChange}) {
                 <label>Type</label>
               </div>
               <div class="am-line-type-sel">
-                <select value={selectValue} onChange={(e)=>{attributeChange(e.target.value,"type")}}>
-                <option value={""} disabled>None</option>
+                <select
+                  value={selectValue}
+                  onChange={(e) => {
+                    attributeChange(e.target.value, "type");
+                  }}
+                >
+                  <option value={""} disabled>
+                    None
+                  </option>
                   {datatypes.map((obj) => {
                     return <option value={obj.value}>{obj.label}</option>;
                   })}
@@ -155,8 +177,6 @@ function CustomNodeEdit({ id, data , handleArtibuteChange}) {
         </div>
         {/* </form> */}
       </div>
-    
-
     </>
   );
 }

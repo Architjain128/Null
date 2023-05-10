@@ -13,17 +13,16 @@ export const nodes = [
     },
     style: {
       width: 244,
-      height: 300,
+      height: 270,
     },
   },
   {
     id: '1_0',
     type: 'child',
-    position: { x: 10, y: 80 },
+    position: { x: 10, y: 50 },
     data: {
       name: '_id',
       type: 'Obj',
-      key: true,
     },
     parentNode: '1',
     extent: 'parent',
@@ -35,11 +34,10 @@ export const nodes = [
   {
     id: '1_1',
     type: 'child',
-    position: { x: 10, y: 150 },
+    position: { x: 10, y: 120 },
     data: {
       name: 'Name',
       type: 'string',
-      key: false,
     },
     draggable: false,
     parentNode: '1',
@@ -51,11 +49,10 @@ export const nodes = [
   {
     id: '1_2',
     type: 'child',
-    position: { x: 10, y: 220 },
+    position: { x: 10, y: 190 },
     data: {
       name: 'val',
       type: 'num',
-      key: false,
     },
     parentNode: '1',
     extent: 'parent',
@@ -75,17 +72,16 @@ export const nodes = [
     },
     style: {
       width: 244,
-      height: 230,
+      height: 200,
     },
   },
   {
     id: '2_0',
     type: 'child',
-    position: { x: 10, y: 80 },
+    position: { x: 10, y: 50 },
     data: {
       name: '_id',
       type: 'Obj',
-      key: true,
     },
     parentNode: '2',
     extent: 'parent',
@@ -97,11 +93,10 @@ export const nodes = [
   {
     id: '2_1',
     type: 'child',
-    position: { x: 10, y: 150 },
+    position: { x: 10, y: 120 },
     data: {
       name: 'Name',
       type: 'string',
-      key: false,
     },
     draggable: false,
     parentNode: '2',
@@ -113,4 +108,7 @@ export const nodes = [
 
 ];
 
-// export const edges = [];
+export const edges = [
+  { id: 'edge-1', source:'1_0', target:'2_0' ,sourceHandle: '1_0_r',  type: 'buttonedge',},
+  // { id: 'edge-2', sourceHandle: '1_1_r', targetHandle: '2_2_l'},
+];

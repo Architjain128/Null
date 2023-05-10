@@ -1,5 +1,11 @@
 import React, { memo } from "react";
-import { Handle, useReactFlow, useStoreApi, Position } from "reactflow";
+import {
+  Handle,
+  useReactFlow,
+  useStoreApi,
+  Position,
+  NodeToolbar,
+} from "reactflow";
 import TextField from "@mui/material/TextField";
 import ReactFlow, {
   MiniMap,
@@ -90,20 +96,26 @@ function Select({ value, handleId, nodeId }) {
   );
 }
 
-function ParentNode({ id, data, handleAddArtibute }) {
+function ParentNode({
+  id,
+  data,
+  handleAddArtibute,
+  handleTableDataChange,
+  deleteTable,
+}) {
   const [buttonVisibility, setButtonVisibility] = React.useState("hidden");
   const [tableName, setTableName] = React.useState(data.tableName);
+  const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
   function createChildObj(id, ctr) {
     try {
       let newObj = {
         id: id + "_" + ctr,
         type: "child",
-        position: { x: 10, y: 80 + 70 * ctr },
+        position: { x: 10, y: 50 + 70 * ctr },
         data: {
           name: "",
           type: "",
-          key: false,
         },
         parentNode: id,
         extent: "parent",
@@ -121,14 +133,8 @@ function ParentNode({ id, data, handleAddArtibute }) {
 
   const onAddAtribute = (id, data) => {
     let newNode = createChildObj(id, data.attribute_count);
-    console.log(">>>",newNode)
-    // if (newNode) {
-    //   // nodes.append(newNode);
-    //   data.attribute_count += 1;
-    // }
-    // update att cnt
+    console.log(">>>", newNode);
     handleAddArtibute(newNode);
-    // add newNode in nodes
   };
   return (
     <>
@@ -138,7 +144,34 @@ function ParentNode({ id, data, handleAddArtibute }) {
           height: "100%",
           width: "100%",
         }}
+        onClick={() => setToolbarVisible(!toolbarVisible)}
       >
+        <NodeToolbar isVisible={toolbarVisible} position={Position.Top}>
+          <button
+            style={{ flex: 1, fontSize: "10px" }}
+            onClick={() => {
+              deleteTable(id.toString());
+            }}
+          >
+            Delete
+          </button>
+          <button
+            style={{ flex: 1, fontSize: "10px" }}
+            onClick={(e) => {
+              onAddAtribute(id, data);
+            }}
+          >
+            Add Attribute
+          </button>
+          <button
+            style={{ flex: 1, fontSize: "10px" }}
+            onClick={(e) => {
+              // onAddAtribute(id, data);
+            }}
+          >
+            Add Constraints
+          </button>
+        </NodeToolbar>
         <div className="custom-node__header">
           <div>
             <div>
@@ -151,10 +184,13 @@ function ParentNode({ id, data, handleAddArtibute }) {
                 value={tableName}
                 onChange={(e) => {
                   setTableName(e.target.value);
+                  let newData = data;
+                  data.tableName = e.target.value;
+                  handleTableDataChange(id, newData);
                 }}
               />
             </div>
-            <div
+            {/* <div
               style={{
                 marginTop: "10px",
                 display: "flex",
@@ -165,7 +201,7 @@ function ParentNode({ id, data, handleAddArtibute }) {
               }}
             >
               <button
-                style={{ flex: 1,fontSize:"10px" }}
+                style={{ flex: 1, fontSize: "10px" }}
                 onClick={(e) => {
                   onAddAtribute(id, data);
                 }}
@@ -173,14 +209,14 @@ function ParentNode({ id, data, handleAddArtibute }) {
                 Add Attribute
               </button>
               <button
-                style={{ flex: 1,fontSize:"10px" }}
+                style={{ flex: 1, fontSize: "10px" }}
                 onClick={(e) => {
                   // onAddAtribute(id, data);
                 }}
               >
-                Add Constraints 
+                Add Constraints
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
