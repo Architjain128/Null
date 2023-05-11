@@ -11,12 +11,14 @@
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@jeremyling/react-use-undoable-state": "^1.1.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0",
-    "reactflow": "^11.7.0"
+    "reactflow": "^11.7.0",
+    "use-undo": "^1.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

@@ -18,7 +18,12 @@ import { Divider, Typography } from "@mui/material";
 // } from "../components/Canvas/data.jsx";
 import ReactFlow, { ReactFlowProvider, useReactFlow } from 'reactflow';
 const config = {
-  dbName: "db1",
+  projectName: "db1",
+  version: "4",
+  user:{
+    name:"Archit Jain",
+    email:"archit.jain@students.iiit.ac.in",
+  }
 };
 
 export default function CanvasPage() {
@@ -31,16 +36,7 @@ export default function CanvasPage() {
 
  
 
-  const genFile = (data) => {
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-      JSON.stringify(data)
-    )}`;
-    const link = document.createElement("a");
-    link.href = jsonString;
-    link.download = "data.json";
-
-    link.click();
-  };
+ 
   const exportJSON = () => {
     let data = JSON.parse(localStorage.getItem("null-db1-data"));
     let expData = {};
@@ -81,7 +77,7 @@ export default function CanvasPage() {
     expData.relations = relations;
     expData.rawData=data;
     console.log(expData);
-    genFile(expData);
+    return expData;
   };
 
   return (
@@ -159,6 +155,7 @@ export default function CanvasPage() {
       <div class="menubar">
         <Menubar
           // addNode={addNode}
+          config={config}
           setCount={setCount}
           preview={preview}
           setPreview={setPreview}

@@ -32,6 +32,17 @@ import {
   MenuItem,
 } from "@mui/material";
 import CanvasPreview from "./canvasPreview.jsx";
+import useUndo from "use-undo";
+import FiberNewIcon from "@mui/icons-material/FiberNew";
+import SaveIcon from "@mui/icons-material/Save";
+import PublishIcon from "@mui/icons-material/Publish";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import UndoIcon from "@mui/icons-material/Undo";
+import RedoIcon from "@mui/icons-material/Redo";
+import PreviewIcon from "@mui/icons-material/Preview";
+import CodeIcon from "@mui/icons-material/Code";
+
 // const CanvasPreview = React.lazy(() => import("./canvasPreview.jsx"));
 
 const constraintsBox = [
@@ -167,7 +178,7 @@ function MultipleSelectChip({
       {constraintsBox.map((obj) => {
         return (
           <div>
-            <FormControl sx={{ m: 1, width: 235 }} size="small">
+            <FormControl sx={{ m: 1, width: 260 }} size="small">
               <InputLabel id="demo-multiple-chip-label">{obj.label}</InputLabel>
               <Select
                 labelId="demo-multiple-chip-label"
@@ -225,10 +236,45 @@ export default function Canvas({
   setModalData,
   exportJSON,
 }) {
+  const [nodes, setNodes] = React.useState(initialNodes);
+  const [edges, setEdges] = React.useState(initialEdges);
   const [constraints, setConstraints] = React.useState({});
+  const [eOpen, setEOpen] = useState(false);
+  const [eName, setEName] = useState("");
+  const [eType, setEType] = useState("1:1");
+  const [eData, setEData] = useState({});
   const [tableId, setTableId] = React.useState("");
   const [tableData, setTableData] = React.useState([]);
+  const [undoArray, setUndoArray] = React.useState([]);
+  const [redoArray, setRedoArray] = React.useState([]);
+  const [
+    local,
+    {
+      set: setLocal,
+      reset: resetCount,
+      undo: undoCount,
+      redo: redoCount,
+      canUndo,
+      canRedo,
+    },
+  ] = useUndo({});
+  const { present: localStore } = local;
+  const onImport = () => {};
 
+  const handleCapture = ({ target }) => {
+    const fileReader = new FileReader();
+    const name = target.accept.includes("image") ? "images" : "videos";
+
+    fileReader.readAsDataURL(target.files[0]);
+    fileReader.onload = (e) => {
+      let dataURI = e.target.result;
+      const json = atob(dataURI.substring(29));
+      const result = JSON.parse(json);
+      setNodes(result.rawData.nodes);
+      setEdges(result.rawData.edges);
+      setConstraints(result.rawData.constraints);
+    };
+  };
   const handleChangeConstraint = (event, name) => {
     console.log(event.target.value, name, tableId);
     let temp = constraints;
@@ -243,42 +289,36 @@ export default function Canvas({
     setConstraints(temp);
   };
 
-  const [nodes, setNodes] = React.useState(initialNodes);
-  const [edges, setEdges] = React.useState(initialEdges);
-  const [eOpen, setEOpen] = useState(false);
-  const [eName, setEName] = useState("");
-  const [eType, setEType] = useState("1:1");
-  const [eData, setEData] = useState({});
-
   useEffect(() => {
-    console.log("nodes", nodes);
-    localStorage.setItem(
-      "null-db1-data",
-      JSON.stringify({
-        nodes: nodes,
-        edges: edges,
-        constraints: constraints,
-      })
-    );
+    setLocal({
+      nodes: nodes,
+      edges: edges,
+      constraints: constraints,
+    });
   }, [nodes, edges, constraints]);
 
-  // useEffect(() => {
-  //   if (preview === true) {
-  //     let modalData = {
-  //       type: "preview",
-  //       title: "Preview of JSON",
-  //       data: {
-  //         nodes: nodes,
-  //         edges: edges,
-  //         constraints: constraints,
-  //         // constraints: tableData,
-  //       },
-  //     };
-  //     setModalData(modalData);
-  //     setOpen(true);
-  //   }
-  // }, [preview]);
+  useEffect(() => {
+    localStorage.setItem("null-db1-data", JSON.stringify(localStore));
+  }, [localStore]);
 
+  // setInterval(() => {
+  //   let curr=JSON.parse(localStorage.getItem("null-db1-data"));
+  //   if(undoArray.length>0 && JSON.stringify(curr)!==JSON.stringify(undoArray[undoArray.length-1])||undoArray.length===0){
+  //     console.log("saving")
+  //     setUndoArray((prev) => [...prev, curr]);
+  //   }
+  // }, 5000);
+
+  const genFile = (data) => {
+    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+      JSON.stringify(data)
+    )}`;
+    const link = document.createElement("a");
+    link.href = jsonString;
+    link.download = "data.json";
+
+    link.click();
+  };
   const addNode = () => {
     let tmp = {
       id: count.toString(),
@@ -423,7 +463,7 @@ export default function Canvas({
           position: "absolute",
           background: "rgba(200,200,200, 0.8)",
           padding: "10px",
-          maxWidth: "400px",
+          maxWidth: "350px",
           minWidth: "200px",
           zIndex: 100,
           justifyContent: "center",
@@ -431,9 +471,17 @@ export default function Canvas({
           display: "flex",
           flexDirection: "column",
           gap: "4px",
+          border: "1px solid black",
+          borderRadius: "15px",
         }}
       >
-        <Button variant="contained" color="info" fullWidth onClick={addNode}>
+        <Button
+          variant="contained"
+          color="info"
+          fullWidth
+          onClick={addNode}
+          startIcon={<AddBoxIcon />}
+        >
           Add a node
         </Button>
         <div
@@ -451,7 +499,9 @@ export default function Canvas({
             variant="contained"
             color="info"
             fullWidth
-            onClick={() => {}}
+            onClick={undoCount}
+            disabled={!canUndo}
+            startIcon={<UndoIcon />}
           >
             Undo
           </Button>
@@ -460,7 +510,15 @@ export default function Canvas({
             variant="contained"
             color="info"
             fullWidth
-            onClick={() => {}}
+            onClick={() => {
+              let data = exportJSON({
+                nodes: nodes,
+                edges: edges,
+                constraints: constraints,
+              });
+              alert("sending data via api : API Needed");
+            }}
+            startIcon={<SaveIcon />}
           >
             Save
           </Button>
@@ -469,7 +527,9 @@ export default function Canvas({
             variant="contained"
             color="info"
             fullWidth
-            onClick={() => {}}
+            onClick={redoCount}
+            disabled={!canRedo}
+            startIcon={<RedoIcon />}
           >
             Redo
           </Button>
@@ -493,6 +553,7 @@ export default function Canvas({
               setEName("preview");
               setEOpen(true);
             }}
+            startIcon={<PreviewIcon />}
           >
             Preview
           </Button>
@@ -515,6 +576,7 @@ export default function Canvas({
               setModalData(modalData);
               setOpen(true);
             }}
+            startIcon={<CodeIcon />}
           >
             View JSON
           </Button>
@@ -534,9 +596,12 @@ export default function Canvas({
             variant="contained"
             color="info"
             fullWidth
-            onClick={() => {}}
+            // onClick={() => {}}
+            component="label"
+            startIcon={<PublishIcon />}
           >
             Import
+            <input type="file" hidden onChange={handleCapture} />
           </Button>
           <Button
             style={{ flex: 1 }}
@@ -544,12 +609,15 @@ export default function Canvas({
             color="info"
             fullWidth
             onClick={() => {
-              exportJSON({
-                nodes: nodes,
-                edges: edges,
-                constraints: constraints,
-              });
+              genFile(
+                exportJSON({
+                  nodes: nodes,
+                  edges: edges,
+                  constraints: constraints,
+                })
+              );
             }}
+            startIcon={<GetAppIcon />}
           >
             Export
           </Button>
@@ -567,6 +635,7 @@ export default function Canvas({
               padding: "5px",
               margin: "5px",
               backgroundColor: "cyan",
+              maxWidth: "300px",
             }}
           >
             <div
@@ -574,7 +643,6 @@ export default function Canvas({
                 padding: "5px",
                 backgroundColor: "rgba(0,0,0,0.1)",
                 borderRadius: "5px",
-                maxWidth: "200px",
                 textAlign: "center",
               }}
             >
@@ -584,6 +652,9 @@ export default function Canvas({
           </div>
         ) : (
           <div
+            onDoubleClick={() => {
+              setTableId("");
+            }}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -593,10 +664,12 @@ export default function Canvas({
               padding: "5px",
               margin: "5px",
               backgroundColor: "cyan",
-              maxWidth: "250px",
+              maxWidth: "280px",
             }}
           >
-            CONSTRAINTS for <strong>{tableData.table.name}</strong>
+            <Typography>
+              CONSTRAINTS for <strong>{tableData.table.name}</strong>
+            </Typography>
             <div
               style={{
                 width: "100%",
