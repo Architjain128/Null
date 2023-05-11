@@ -145,6 +145,7 @@ function ParentNode({
           border: "1px solid black",
           height: "100%",
           width: "100%",
+          borderRadius: "10px",
         }}
         onClick={() => setToolbarVisible(!toolbarVisible)}
       >
@@ -168,24 +169,26 @@ function ParentNode({
           <button
             style={{ flex: 1, fontSize: "10px" }}
             onClick={(e) => {
-              let newData = JSON.parse(localStorage.getItem("null-db1-data")).nodes;
+              let newData = JSON.parse(
+                localStorage.getItem("null-db1-data")
+              ).nodes;
               let info = newData.filter((item) => item.id.split("_")[0] === id);
-              let tmp={}
-              let table=info.filter((item)=>item.type==="parent")[0]
-              let tb={}
-              tb.id=table.id
-              tb.name=table.data.tableName
-              tmp.table=tb
-              let attributes=info.filter((item)=>item.type==="child")
-              let att=[]
-              attributes.forEach((item)=>{
-                let tmp={}
-                tmp.id=item.id
-                tmp.name=item.data.name
+              let tmp = {};
+              let table = info.filter((item) => item.type === "parent")[0];
+              let tb = {};
+              tb.id = table.id;
+              tb.name = table.data.tableName;
+              tmp.table = tb;
+              let attributes = info.filter((item) => item.type === "child");
+              let att = [];
+              attributes.forEach((item) => {
+                let tmp = {};
+                tmp.id = item.id;
+                tmp.name = item.data.name;
                 // tmp.type=item.data.type
-                att.push(tmp)
-              })
-              tmp.attributes=att
+                att.push(tmp);
+              });
+              tmp.attributes = att;
 
               setConstraints(tmp);
               setTableId(id);

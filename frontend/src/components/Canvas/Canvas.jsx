@@ -31,6 +31,8 @@ import {
   OutlinedInput,
   MenuItem,
 } from "@mui/material";
+import CanvasPreview from "./canvasPreview.jsx";
+// const CanvasPreview = React.lazy(() => import("./canvasPreview.jsx"));
 
 const constraintsBox = [
   {
@@ -388,6 +390,7 @@ export default function Canvas({
       data.RType = eType;
       console.log(data);
       setEData(data);
+      setEName("edge");
       setEOpen(true);
     },
     [setEdges]
@@ -404,8 +407,6 @@ export default function Canvas({
     setNodes(newNode);
     setEdges(newEdge);
   };
-
- 
 
   // const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -488,7 +489,10 @@ export default function Canvas({
             variant="contained"
             color="info"
             fullWidth
-            onClick={() => {}}
+            onClick={() => {
+              setEName("preview");
+              setEOpen(true);
+            }}
           >
             Preview
           </Button>
@@ -540,7 +544,11 @@ export default function Canvas({
             color="info"
             fullWidth
             onClick={() => {
-              exportJSON({ nodes: nodes, edges: edges, constraints: constraints });
+              exportJSON({
+                nodes: nodes,
+                edges: edges,
+                constraints: constraints,
+              });
             }}
           >
             Export
@@ -610,91 +618,136 @@ export default function Canvas({
       <Dialog
         open={eOpen}
         onClose={() => {
+          setEName("");
           setEOpen(false);
         }}
         scroll="paper"
       >
-        <DialogTitle>Realtion</DialogTitle>
+        <DialogTitle>
+          {eName === "edge"
+            ? "Realtion"
+            : eName === "preview"
+            ? "Preview"
+            : "NONE"}
+        </DialogTitle>
         <DialogContent dividers={true}>
           <DialogContentText>
-            <div
-              style={{
-                width: "500px",
-              }}
-            >
-              {/* <TextField label="Name" fullWidth defaultValue={" "} />
-              <br />
-              <br /> */}
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="Type"
-                value={eType}
-                fullWidth
-                required
-                onChange={(e) => {
-                  setEType(e.target.value);
+            {eName === "edge" ? (
+              <div
+                style={{
+                  width: "500px",
                 }}
               >
-                {types.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+                {/* <TextField label="Name" fullWidth defaultValue={" "} />
               <br />
-              <br />
-              <TextField
-                label="Foriegn Key 1"
-                disabled
-                defaultValue={eData.fk1}
-                fullWidth
-              />
-              <br />
-              <br />
-              <TextField
-                label="Foriegn Key 2"
-                disabled
-                defaultValue={eData.fk2}
-                fullWidth
-              />
-              <br />
-              <br />
-              <TextField
-                label="Table 1"
-                disabled
-                defaultValue={eData.tb1}
-                fullWidth
-              />
-              <br />
-              <br />
-              <TextField
-                label="Table 2"
-                disabled
-                defaultValue={eData.tb2}
-                fullWidth
-              />
-            </div>
+              <br /> */}
+                <TextField
+                  id="outlined-select-currency"
+                  select
+                  label="Type"
+                  value={eType}
+                  fullWidth
+                  required
+                  onChange={(e) => {
+                    setEType(e.target.value);
+                  }}
+                >
+                  {types.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <br />
+                <br />
+                <TextField
+                  label="Foriegn Key 1"
+                  disabled
+                  defaultValue={eData.fk1}
+                  fullWidth
+                />
+                <br />
+                <br />
+                <TextField
+                  label="Foriegn Key 2"
+                  disabled
+                  defaultValue={eData.fk2}
+                  fullWidth
+                />
+                <br />
+                <br />
+                <TextField
+                  label="Table 1"
+                  disabled
+                  defaultValue={eData.tb1}
+                  fullWidth
+                />
+                <br />
+                <br />
+                <TextField
+                  label="Table 2"
+                  disabled
+                  defaultValue={eData.tb2}
+                  fullWidth
+                />
+              </div>
+            ) : eName === "preview" ? (
+              <div
+                style={{
+                  width: "800px",
+                  height: "500px",
+                }}
+              >
+                <CanvasPreview
+                  initialNodes={nodes}
+                  initialEdges={edges}
+                  initialConstraints={constraints}
+                />
+              </div>
+            ) : (
+              <div></div>
+            )}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => {
-              setEdges((eds) => [...eds, eData]);
-              setEOpen(false);
-            }}
-          >
-            Done
-          </Button>
-          <Button
-            onClick={() => {
-              setEType("1:1");
-              setEData({});
-              setEOpen(false);
-            }}
-          >
-            Cancel
-          </Button>
+          {eName === "edge" ? (
+            <>
+              <Button
+                onClick={() => {
+                  setEdges((eds) => [...eds, eData]);
+                  setEName("");
+
+                  setEOpen(false);
+                }}
+              >
+                Done
+              </Button>
+              <Button
+                onClick={() => {
+                  setEType("1:1");
+                  setEData({});
+                  setEName("");
+
+                  setEOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </>
+          ) : eName === "preview" ? (
+            <>
+              <Button
+                onClick={() => {
+                  setEName("");
+                  setEOpen(false);
+                }}
+              >
+                Close
+              </Button>
+            </>
+          ) : (
+            <></>
+          )}
         </DialogActions>
       </Dialog>
 

@@ -6,7 +6,17 @@
   height: 100%;
   width: 100%;
 }
+.MuiDialog-paperScrollPaper{
+  max-width: fit-content !important;
+}
 
+.am-line-name-c{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  padding: 0px 10px;
+}
 .shell {
   display: flex;
   width: 100%;
@@ -54,6 +64,16 @@ select {
 .attribute-wrapper {
   margin: 4px 0px;
   padding: 8px;
+  border: 1px dashed grey;
+  border-radius: 5px;
+  gap: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.attribute-wrapper-p {
+  margin: 4px 0px;
+  padding: 14px 5px;
   border: 1px dashed grey;
   border-radius: 5px;
   gap: 5px;
