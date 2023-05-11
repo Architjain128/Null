@@ -20,9 +20,17 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { TextField, Select, MenuItem } from "@mui/material";
+import { TextField, Select } from "@mui/material";
 import { nodes as initialNodes, edges as initialEdges } from "./data.jsx";
-import { Typography, FormControl, InputLabel, Chip } from "@mui/material";
+import {
+  Typography,
+  FormControl,
+  InputLabel,
+  Chip,
+  Box,
+  OutlinedInput,
+  MenuItem,
+} from "@mui/material";
 
 const constraintsBox = [
   {
@@ -45,36 +53,36 @@ const constraintsBox = [
   },
   {
     id: "3",
-    label: "Candidate Key",
-    field: "candidate_key",
-    type: "2Darray",
-  },
-  {
-    id: "4",
     label: "Foreign Key",
     field: "foreign_key",
-    type: "2Darray",
+    type: "array",
   },
-  {
-    id: "5",
-    label: "Default",
-    field: "default",
-    type: "arrayObj",
-    obj: {
-      attribute_name: "",
-      value: "",
-    },
-  },
-  {
-    id: "6",
-    label: "Check",
-    field: "check",
-    type: "arrayObj",
-    obj: {
-      attribute_name: "",
-      condition: "",
-    },
-  },
+  // {
+  //   id: "4",
+  //   label: "Candidate Key",
+  //   field: "candidate_key",
+  //   type: "2Darray",
+  // },
+  // {
+  //   id: "5",
+  //   label: "Default",
+  //   field: "default",
+  //   type: "arrayObj",
+  //   obj: {
+  //     attribute_name: "",
+  //     value: "",
+  //   },
+  // },
+  // {
+  //   id: "6",
+  //   label: "Check",
+  //   field: "check",
+  //   type: "arrayObj",
+  //   obj: {
+  //     attribute_name: "",
+  //     condition: "",
+  //   },
+  // },
 ];
 
 const types = [
@@ -98,28 +106,134 @@ const types = [
 
 const attributes = ["attribute1", "attribute2", "attribute3", "attribute4"];
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const checkArray = (data, id, name) => {
+  if (data[id.toString()] && data[id.toString()][name])
+    return data[id.toString()][name];
+  if (data[parseInt(id)] && data[parseInt(id)][name])
+    return data[parseInt(id)][name];
+  return [];
+};
+
+function MultipleSelectChip({
+  tableId,
+  tableData,
+  constraints,
+  setConstraints,
+}) {
+  const [nn, setNn] = useState(checkArray(constraints, tableId, "not_null"));
+  const [unq, setUnq] = useState(checkArray(constraints, tableId, "unique"));
+  const [pk, setPk] = useState(checkArray(constraints, tableId, "primary_key"));
+  const [fk, setFk] = useState(checkArray(constraints, tableId, "foreign_key"));
+
+  useEffect(() => {
+    let cons = {};
+    cons["not_null"] = nn;
+    cons["unique"] = unq;
+    cons["primary_key"] = pk;
+    cons["foreign_key"] = fk;
+
+    if (constraints[tableId.toString()] === undefined) {
+      setConstraints((prev) => ({ ...prev, [tableId.toString()]: cons }));
+    } else {
+      setConstraints((prev) => ({ ...prev, [tableId.toString()]: cons }));
+    }
+  }, [nn, unq, pk, fk]);
+
+  const handleChangeConstraint = (event, name) => {
+    name === "not_null"
+      ? setNn(event.target.value)
+      : name === "unique"
+      ? setUnq(event.target.value)
+      : name === "primary_key"
+      ? setPk(event.target.value)
+      : setFk(event.target.value);
+  };
+
+  return (
+    <div>
+      {constraintsBox.map((obj) => {
+        return (
+          <div>
+            <FormControl sx={{ m: 1, width: 235 }} size="small">
+              <InputLabel id="demo-multiple-chip-label">{obj.label}</InputLabel>
+              <Select
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip"
+                multiple
+                value={
+                  obj.field === "not_null"
+                    ? nn
+                    : obj.field === "unique"
+                    ? unq
+                    : obj.field === "primary_key"
+                    ? pk
+                    : fk
+                }
+                onChange={(e) => handleChangeConstraint(e, obj.field)}
+                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                renderValue={(selected) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 0.5,
+                    }}
+                  >
+                    {selected.map((value) => (
+                      <Chip key={value} label={value.name} />
+                    ))}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+              >
+                {tableData.attributes.map((name) => (
+                  <MenuItem
+                    key={name.id}
+                    value={name}
+                    // style={getStyles(name, personName, theme)}
+                  >
+                    {name.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Canvas({
   count,
   setCount,
   preview,
   setOpen,
   setModalData,
-  // nodes,
-  // edges,
-  // setNodes,
-  // setEdges,
+  exportJSON,
 }) {
   const [constraints, setConstraints] = React.useState({});
   const [tableId, setTableId] = React.useState("");
   const [tableData, setTableData] = React.useState([]);
 
   const handleChangeConstraint = (event, name) => {
-    console.log(event.target.value,name,tableId)
+    console.log(event.target.value, name, tableId);
     let temp = constraints;
-    if(!temp[tableId]){
+    if (!temp[tableId]) {
       temp[tableId] = {};
     }
-    let tmp= temp[tableId];
+    let tmp = temp[tableId];
     if (!tmp[name]) {
       tmp[name] = [];
     }
@@ -141,26 +255,27 @@ export default function Canvas({
       JSON.stringify({
         nodes: nodes,
         edges: edges,
+        constraints: constraints,
       })
     );
-  }, [nodes, edges]);
+  }, [nodes, edges, constraints]);
 
-  useEffect(() => {  
-    if (preview === true) {
-      let modalData = {
-        type: "preview",
-        title: "Preview of JSON",
-        data: {
-          nodes: nodes,
-          edges: edges,
-          constraints: constraints,
-          // constraints: tableData,
-        },
-      };
-      setModalData(modalData);
-      setOpen(true);
-    }
-  }, [preview]);
+  // useEffect(() => {
+  //   if (preview === true) {
+  //     let modalData = {
+  //       type: "preview",
+  //       title: "Preview of JSON",
+  //       data: {
+  //         nodes: nodes,
+  //         edges: edges,
+  //         constraints: constraints,
+  //         // constraints: tableData,
+  //       },
+  //     };
+  //     setModalData(modalData);
+  //     setOpen(true);
+  //   }
+  // }, [preview]);
 
   const addNode = () => {
     let tmp = {
@@ -289,6 +404,9 @@ export default function Canvas({
     setNodes(newNode);
     setEdges(newEdge);
   };
+
+ 
+
   // const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
@@ -343,7 +461,89 @@ export default function Canvas({
             fullWidth
             onClick={() => {}}
           >
+            Save
+          </Button>
+          <Button
+            style={{ flex: 1 }}
+            variant="contained"
+            color="info"
+            fullWidth
+            onClick={() => {}}
+          >
             Redo
+          </Button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            justifyItems: "space-between",
+            width: "100%",
+            gap: "4px",
+          }}
+        >
+          <Button
+            style={{ flex: 1 }}
+            variant="contained"
+            color="info"
+            fullWidth
+            onClick={() => {}}
+          >
+            Preview
+          </Button>
+          <Button
+            style={{ flex: 1 }}
+            variant="contained"
+            color="info"
+            fullWidth
+            onClick={() => {
+              let modalData = {
+                type: "preview",
+                title: "Preview of JSON",
+                data: {
+                  nodes: nodes,
+                  edges: edges,
+                  constraints: constraints,
+                  // constraints: tableData,
+                },
+              };
+              setModalData(modalData);
+              setOpen(true);
+            }}
+          >
+            View JSON
+          </Button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            justifyItems: "space-between",
+            width: "100%",
+            gap: "4px",
+          }}
+        >
+          <Button
+            style={{ flex: 1 }}
+            variant="contained"
+            color="info"
+            fullWidth
+            onClick={() => {}}
+          >
+            Import
+          </Button>
+          <Button
+            style={{ flex: 1 }}
+            variant="contained"
+            color="info"
+            fullWidth
+            onClick={() => {
+              exportJSON({ nodes: nodes, edges: edges, constraints: constraints });
+            }}
+          >
+            Export
           </Button>
         </div>
         {tableId === "" ? (
@@ -366,11 +566,12 @@ export default function Canvas({
                 padding: "5px",
                 backgroundColor: "rgba(0,0,0,0.1)",
                 borderRadius: "5px",
-                maxWidth:"200px",
+                maxWidth: "200px",
                 textAlign: "center",
               }}
             >
-            Select a table and click on <strong>Add Constraints</strong>  to add constraints for that table.
+              Select a table and click on <strong>Add Constraints</strong> to
+              add constraints for that table.
             </div>
           </div>
         ) : (
@@ -384,61 +585,24 @@ export default function Canvas({
               padding: "5px",
               margin: "5px",
               backgroundColor: "cyan",
+              maxWidth: "250px",
             }}
           >
             CONSTRAINTS for <strong>{tableData.table.name}</strong>
             <div
-            key={constraints}
               style={{
                 width: "100%",
+                marginBottom: "5px",
+                maxWidth: "250px",
               }}
             >
-              {constraintsBox.map((obj) => {
-                return (
-                  <div
-                    style={{
-                      margin: "2px",
-                      border: "1px solid grey",
-                      padding: "5px",
-                    }}
-                  >
-                    <Typography variant="subtitle" gutterBottom>
-                      {obj.label}
-                    </Typography>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      multiple={true}
-                      value={constraints[tableId.toString()] && constraints[tableId.toString()][obj.field] ? constraints[tableId.toString()][obj.field]:[{id:"12_1",name:"fef"},{id:"12_2",name:"fedf"}]}
-                      onChange={(e) => handleChangeConstraint(e, obj.field)}
-                      style={{
-                        width: "100%",
-                        padding: "0px",
-                      }}
-                      renderValue={(selected) => (
-                        <div
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          {selected.map((value) => (
-                            <Chip
-                              style={{ margin: 2 }}
-                              key={value.id}
-                              label={value.name}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    >
-                      {tableData.attributes.map((obj) => {
-                        return <option value={obj}>{obj.name}</option>;
-                      })}
-                    </Select>
-                  </div>
-                );
-              })}
+              <MultipleSelectChip
+                key={tableId}
+                tableId={tableId}
+                tableData={tableData}
+                constraints={constraints}
+                setConstraints={setConstraints}
+              />
             </div>
           </div>
         )}

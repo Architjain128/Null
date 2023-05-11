@@ -13,7 +13,7 @@ import CodeIcon from "@mui/icons-material/Code";
 
 export default function Menubar({ data, preview,setPreview,exportJSON,setCount }) {
   const menuButtons = [
-    { label: "New Schema", icon: <FiberNewIcon />, divider: false, function:()=>{} },
+    // { label: "New Schema", icon: <FiberNewIcon />, divider: false, function:()=>{} },
     { label: "Save Schema", icon: <SaveIcon />, divider: true, function:()=>{} },
     { label: "Preview", icon: <PreviewIcon />, divider: true,function:()=>{} },
 

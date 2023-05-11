@@ -46,6 +46,7 @@ export default function CanvasPage() {
     let expData = {};
     let nodes = data.nodes;
     let edges = data.edges;
+    let constraints = data.constraints;
     let tbCnt = nodes.filter((x) => x.id.split("_").length === 1);
     let tables = [];
     tbCnt.forEach((x) => {
@@ -55,12 +56,13 @@ export default function CanvasPage() {
       let tb = {};
       tb.link_to_file = x.data.link_to_file;
       tb.table_name = x.data.tableName;
-      tb.attribute_count = x.data.attribute_count;
       let at = [];
       childs.forEach((xx) => {
         at.push(xx.data);
       });
       tb.attributes = at;
+      tb.attribute_count = at.length;
+      tb.constraints = constraints[x.id]||{};
       tables.push(tb);
     });
     let relations = [];
@@ -77,6 +79,7 @@ export default function CanvasPage() {
     expData.table_num = tbCnt.length;
     expData.tables = tables;
     expData.relations = relations;
+    expData.rawData=data;
     console.log(expData);
     genFile(expData);
   };
@@ -172,6 +175,7 @@ export default function CanvasPage() {
           <Canvas
             count={count}
           setCount={setCount}
+          exportJSON={exportJSON}
 
             // nodes={nodes}
             // setNodes={setNodes}

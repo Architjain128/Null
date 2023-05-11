@@ -182,7 +182,7 @@ function ParentNode({
                 let tmp={}
                 tmp.id=item.id
                 tmp.name=item.data.name
-                tmp.type=item.data.type
+                // tmp.type=item.data.type
                 att.push(tmp)
               })
               tmp.attributes=att
