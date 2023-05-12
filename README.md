@@ -34,3 +34,7 @@ This repo only contains code for shell part which enables user can design the st
 > + Pulkit Gupta
 > + Harshita Upadhya
 
++ screenshots > https://hackmd.io/XQlaqnf6Rjm9NlSJZVUHhw 
++ task division > https://hackmd.io/o1JVJ44AS0aMf6gdW_q7sg
++ scope(first draft) > https://hackmd.io/_xT6l9mUS3quNvTJJ3POBQ
++ final scope > https://github.com/Architjain128/Null/blob/master/Scope_Doc.md
