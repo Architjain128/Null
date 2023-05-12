@@ -100,15 +100,16 @@ As the project has been divided into 2 teams and our scope of Data Ingestion UI 
     -  **save**- save the model
     - **preview**- preview the model 
 
-## Backend
+<!-- ## Backend
 From given different csv, we will extract the following inferences- 
 - **table fields/attributes** 
-- **attribute type** 
+- **attribute type**  -->
 <!-- - **foreign keys**  -->
 
 
 
 ## Not in the Scope of Project
 + version management 
++ any db and backend to same json (to be done by other team and provide api)
 + full-fledged ER model designing tool
 
